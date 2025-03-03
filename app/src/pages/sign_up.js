@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import gator from "../gator.png";
+import { auth } from "../firebase";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 
 function SignUp() {
   const [formData, setFormData] = useState({
@@ -20,7 +23,7 @@ function SignUp() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!formData.firstName || !formData.lastName || !formData.email || !formData.password) {
@@ -32,14 +35,35 @@ function SignUp() {
       setError("Passwords don't match");
       return;
     }
+
+    if (!formData.email.endsWith('@ufl.edu')) {
+      setError("Please use a ufl.edu address");
+      return;
+    }
     
     console.log("Sign up clicked")
     
-    navigate("/map");
+    try{
+      const userCredentials = await createUserWithEmailAndPassword(
+        auth,
+        formData.email,
+        formData.password
+      );
+      
+      await updateProfile(userCredentials.user, {
+        displayName: `${formData.firstName} ${formData.lastName}`
+      });
+      navigate("/map")
+      console.log('account creation success');
+    } catch(error){
+      console.error("Error creating account:", error.message);
+      setError(error.code)
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <img src={gator} alt="Logo" className="absolute top-0 left-0 w-56 h-36 m-4" />
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
           Join StudyBuddy Today

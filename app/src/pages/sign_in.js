@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import gator from "../gator.png";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
 
 function SignIn() {
   const [email, setEmail] = useState("");
@@ -7,14 +10,23 @@ function SignIn() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => { //event handler
+  const handleSubmit = async (e) => { //event handler
     e.preventDefault(); //prevents page refresh
     console.log("submit clicked")
-    navigate("/map"); //attatched to eventhandlers only
+
+    try{
+      await signInWithEmailAndPassword(auth, email, password);
+      console.log('signed in success');
+      navigate("/map"); //attatched to eventhandlers only
+    } catch(error){
+      console.log('Error:', error);
+      setError(error.message);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <img src={gator} alt="Logo" className="absolute top-0 left-0 w-56 h-36 m-4" />
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
           Sign in to StudyBuddy

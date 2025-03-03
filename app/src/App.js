@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import './index.css'
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
@@ -8,7 +7,6 @@ import SignUp from './pages/sign_up';
 
 function Home() {
   const navigate = useNavigate();
-
   return (
     <div className="min-h-screen bg-white flex items-center justify-center">
       <div className="text-center">
