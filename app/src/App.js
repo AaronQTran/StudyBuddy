@@ -2,9 +2,9 @@ import logo from './logo.svg';
 import './App.css';
 import './index.css'
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
-import Map from './pages/map';
-import SignIn from './pages/sign_in';
-import SignUp from './pages/sign_up';
+import Map from './Frontend/map';
+import SignIn from './Frontend/sign_in';
+import SignUp from './Frontend/sign_up';
 
 function Home() {
   const navigate = useNavigate();
