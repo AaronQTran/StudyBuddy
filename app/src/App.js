@@ -14,7 +14,6 @@ const ProtectedRoute = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => { //gets current user when auth state changes, either user object or null
       setUser(currentUser);
-      setLoading(false);
     });
 
     return () => unsubscribe();
