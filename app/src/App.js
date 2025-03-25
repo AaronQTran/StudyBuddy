@@ -71,9 +71,9 @@ function App() {
           <Route 
             path="/map" 
             element={
-              <ProtectedRoute>
+     
                 <Map />
-              </ProtectedRoute>
+       
             } 
           />
         </Routes>
