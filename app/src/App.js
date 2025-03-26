@@ -3,6 +3,7 @@ import './index.css';
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom'; 
 import { useEffect, useState } from 'react'; 
 import { getAuth, onAuthStateChanged } from 'firebase/auth'; 
+import logo from "./studybuddylogo.png"; 
 import Map from './pages/map'; 
 import SignIn from './pages/sign_in'; 
 import SignUp from './pages/sign_up';
@@ -35,17 +36,18 @@ const ProtectedRoute = ({ children }) => {
 function Home() {
   const navigate = useNavigate();
   return (
-    <div className="min-h-screen bg-[#FFFCF6] text-gray-900">
+    <div className="min-h-screen bg-cover bg-center bg-[url('/src/background.jpg')]">
       {/* Navbar */}
       <div className="flex justify-between items-center px-12 py-6">
         {/* Logo */}
-        <div className="flex items-center space-x-2">
-          <img src="/public/studybuddylogo.png" alt="StudyBuddy Logo" className="w-12 h-12" />
+        <div className="flex items-center space-x-0 ml-0 mt-0">
+          <img src={logo} alt="StudyBuddy Logo" className="w-16 h-16" />
           <h1 className="text-3xl font-bold">
-            <span className="text-blue-700">Study</span>
-            <span className="text-orange-500">Buddy</span>
+            <span className="text-[#0021A5]">Study</span>
+            <span className="text-[#FA4616]">Buddy</span>
           </h1>
         </div>
+
         {/* Buttons */}
         <div className="space-x-4">
           <button
@@ -63,14 +65,14 @@ function Home() {
         </div>
       </div>
       {/* Main Content */}
-      <div className="px-12 py-24">
+      <div className="px-12 py-24 text-left">
         <h1 className="text-8xl font-bold">
-          <span className="text-blue-700">Study</span>
-          <span className="text-orange-500">Buddy</span>
+          <span className="text-[#1350f2]">Study</span>
+          <span className="text-[#FA4616]">Buddy</span>
         </h1>
-        <h2 className="text-6xl font-bold mt-2 text-black">at UF</h2>
+        <h2 className="text-6xl font-bold mt-2 text-[#ffffff]">at UF</h2>
         
-        <p className="mt-6 text-lg max-w-2xl">
+        <p className="mt-6 text-lg max-w-2xl text-[#ffffff]">
           Join a growing community of students sharing study locations and real-time availability. 
           Connect with other gators, share study spots, and stay focused together!
         </p>
