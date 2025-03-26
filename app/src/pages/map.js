@@ -11,7 +11,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
 });
 
-function App() {
+function Map() {
   // Coordinates for library markers
   const libraries = [
     { name: 'Marston Science Library', position: [29.647966553280117, -82.343966960907] },
@@ -108,4 +108,4 @@ function App() {
   );
 }
 
-export default App;
+export default Map;

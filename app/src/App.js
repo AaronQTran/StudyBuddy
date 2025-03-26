@@ -9,22 +9,28 @@ import SignUp from './pages/sign_up';
 
 const ProtectedRoute = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [isLoading, setisLoading] = useState(true);
   const auth = getAuth();
-  
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => { //gets current user when auth state changes, either user object or null
       setUser(currentUser);
+      setisLoading(false); //triggers a rerender with new state variables
     });
-    
+
     return () => unsubscribe();
   }, [auth]);
-  
+
+  if(isLoading){
+    return <div>loading</div>
+  }
   if (!user) {
     return <Navigate to="/signin" replace />;
   }
-  
+
   return children;
 };
+
 
 function Home() {
   const navigate = useNavigate();
@@ -94,9 +100,9 @@ function App() {
           <Route
             path="/map"
             element={
-              
+              <ProtectedRoute>
                 <Map />
-              
+                </ProtectedRoute>
             }
           />
         </Routes>
