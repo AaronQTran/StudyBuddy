@@ -102,6 +102,7 @@ function Home() {
             Go to Map (Protected)
           </button>
         </div>
+        </div>
       </div>
     </div>
   );
