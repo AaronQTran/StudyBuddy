@@ -67,19 +67,7 @@ function Home() {
           </button>
         </div>
       </div>
-      {/* Main Content */}
-      <div className="px-12 py-24">
-        <h1 className="text-8xl font-bold">
-          <span className="text-blue-700">Study</span>
-          <span className="text-orange-500">Buddy</span>
-        </h1>
-        <h2 className="text-6xl font-bold mt-2 text-black">at UF</h2>
-        
-        <p className="mt-6 text-lg max-w-2xl">
-          Join a growing community of students sharing study locations and real-time availability. 
-          Connect with other gators, share study spots, and stay focused together!
-        </p>
-        
+      {/* Main Content */} 
       <div className="px-12 py-24 text-left">
         <h1 className="text-8xl font-bold">
           <span className="text-[#1350f2]">Study</span>
@@ -104,8 +92,7 @@ function Home() {
         </div>
         </div>
       </div>
-    </div>
-  );
+  )
 }
 
 function App() {
