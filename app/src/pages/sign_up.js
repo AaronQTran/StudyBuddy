@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import gator from "../gator.png";
 import { auth } from "../firebase";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from "firebase/auth";
 
 function SignUp() {
   const [formData, setFormData] = useState({
@@ -49,13 +49,25 @@ function SignUp() {
         formData.email,
         formData.password
       );
-      
-      await updateProfile(userCredentials.user, {
-        displayName: `${formData.firstName} ${formData.lastName}`
-      });
-      navigate("/map")
-      console.log('account creation success');
-    } catch(error){
+      await sendEmailVerification(auth.currentUser)
+      setError("Email Verification has been sent, you have 2 minutes to verify")
+      setTimeout(async () =>{
+        console.log('settimeout called')
+
+        auth.currentUser.reload(); //ISSUE HERE
+
+        if(auth.currentUser.emailVerified){
+          console.log('verified')
+          await updateProfile(auth.currentUser, {
+            displayName: `${formData.firstName} ${formData.lastName}`
+          });
+          navigate("/map")
+          console.log('account creation success');
+        }else{
+          console.log('email isnt verified')
+        }
+      }, 90000)
+    }catch(error){
       console.error("Error creating account:", error.message);
       setError(error.code)
     }
