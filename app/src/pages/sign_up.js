@@ -11,6 +11,7 @@ function SignUp() {
     email: "",
     password: "",
     confirmPassword: "",
+    //courses: [],
   });
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -23,11 +24,12 @@ function SignUp() {
     }));
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!formData.firstName || !formData.lastName || !formData.email || !formData.password) {
-      setError("All fiels are required");
+      setError("All fields are required");
       return;
     }
     
@@ -53,7 +55,7 @@ function SignUp() {
       await updateProfile(userCredentials.user, {
         displayName: `${formData.firstName} ${formData.lastName}`
       });
-      navigate("/map")
+      navigate("/coursepage")
       console.log('account creation success');
     } catch(error){
       console.error("Error creating account:", error.message);
@@ -182,7 +184,7 @@ function SignUp() {
                 type="submit"
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
-                Sign up
+                Next
               </button>
             </div>
           </form>
