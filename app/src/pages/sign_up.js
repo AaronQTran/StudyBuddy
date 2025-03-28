@@ -43,31 +43,47 @@ function SignUp() {
     
     console.log("Sign up clicked")
     
+    // try{
+    //   const userCredentials = await createUserWithEmailAndPassword(
+    //     auth,
+    //     formData.email,
+    //     formData.password
+    //   );
+    //   await sendEmailVerification(auth.currentUser)
+    //   setError("Email Verification has been sent, you have 2 minutes to verify")
+    //   setTimeout(async () =>{
+    //     console.log('settimeout called')
+
+    //     await auth.currentUser.reload(); //ISSUE HERE
+
+    //     if(auth.currentUser.emailVerified){
+    //       console.log('verified')
+    //       await updateProfile(auth.currentUser, {
+    //         displayName: `${formData.firstName} ${formData.lastName}`
+    //       });
+    //       navigate("/map")
+    //       console.log('account creation success');
+    //     }else{
+    //       console.log('email isnt verified')
+    //     }
+    //   }, 120000)
+    // }catch(error){
+    //   console.error("Error creating account:", error.message);
+    //   setError(error.code)
+    // }
     try{
       const userCredentials = await createUserWithEmailAndPassword(
         auth,
         formData.email,
         formData.password
       );
-      await sendEmailVerification(auth.currentUser)
-      setError("Email Verification has been sent, you have 2 minutes to verify")
-      setTimeout(async () =>{
-        console.log('settimeout called')
-
-        auth.currentUser.reload(); //ISSUE HERE
-
-        if(auth.currentUser.emailVerified){
-          console.log('verified')
-          await updateProfile(auth.currentUser, {
-            displayName: `${formData.firstName} ${formData.lastName}`
-          });
-          navigate("/map")
-          console.log('account creation success');
-        }else{
-          console.log('email isnt verified')
-        }
-      }, 90000)
-    }catch(error){
+      
+      await updateProfile(userCredentials.user, {
+        displayName: `${formData.firstName} ${formData.lastName}`
+      });
+      navigate("/map")
+      console.log('account creation success');
+    } catch(error){
       console.error("Error creating account:", error.message);
       setError(error.code)
     }
