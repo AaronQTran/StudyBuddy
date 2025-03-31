@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import gator from "../gator.png";
 import { auth } from "../firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../firebase";
 
 function CoursePage() {
   const [courseCode, setCourseCode] = useState("");
@@ -14,7 +16,7 @@ function CoursePage() {
     if (!courses.includes(courseCode)) {
       if (courseCode.length === 7 ||courseCode.length === 8) {
         if (/^[A-Za-z]{3}$/.test(courseCode.substring(0, 3)) && /^\d{4}$/.test(courseCode.substring(3,7))) {
-          setCourses([...courses, courseCode.trim()]);
+          setCourses([...courses, courseCode.trim().toUpperCase()]);
           setCourseCode("");
           setError("");
         }  
@@ -38,9 +40,18 @@ function CoursePage() {
   const handleSubmit = async (e) => {
      e.preventDefault();
     
+    try {
+      const userId = auth.currentUser.uid;
+      const userDocRef = doc(db, "users", userId);
 
-    console.log("Selected courses:", courses);
-    navigate("/map");
+      await setDoc(userDocRef, { courses: courses }, { merge: true });
+      console.log("Courses saved successfully!");
+      navigate("/map");
+    }
+    catch (error) {
+      console.error("Error saving courses:", error);
+      setError("Failed to save courses. Please try again.");
+    }
   };
     
   

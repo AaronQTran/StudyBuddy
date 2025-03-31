@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import gator from "../gator.png";
 import { auth } from "../firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 
 function SignUp() {
   const [formData, setFormData] = useState({
@@ -51,10 +52,20 @@ function SignUp() {
         formData.email,
         formData.password
       );
-      
+
+      // const userId = userCredentials.user.uid;
+      // const userRef = doc(db, "users", userId);
+
+      // await setDoc(userRef, {
+      //   firstName: formData.firstName,
+      //   lastName: formData.lastName,
+      //   email: formData.email,
+      // });
+
       await updateProfile(userCredentials.user, {
         displayName: `${formData.firstName} ${formData.lastName}`
       });
+      
       navigate("/coursepage")
       console.log('account creation success');
     } catch(error){
