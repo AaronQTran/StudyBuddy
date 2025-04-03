@@ -39,6 +39,8 @@ function Home() {
   return (
 
     <div className="min-h-screen bg-cover bg-center bg-[url('/src/background.jpg')]">
+      <div className="absolute inset-0 bg-gradient-to-b from-white/50 to white"></div>
+      <div className="relative">
       {/* Navbar */}
       <div className="flex justify-between items-center px-12 py-6">
         {/* Logo */}
@@ -66,32 +68,35 @@ function Home() {
             Sign Up
           </button>
         </div>
-      </div>
+      </div> 
       {/* Main Content */} 
-      <div className="px-12 py-24 text-left">
-        <h1 className="text-8xl font-bold">
-          <span className="text-[#1350f2]">Study</span>
-          <span className="text-[#FA4616]">Buddy</span>
-        </h1>
-        <h2 className="text-6xl font-bold mt-2 text-[#ffffff]">at UF</h2>
-        
-        <p className="mt-6 text-lg max-w-2xl text-[#ffffff]">
-          Join a growing community of students sharing study locations and real-time availability. 
-          Connect with other gators, share study spots, and stay focused together!
-        </p>
-        
+      <div className="bg-white py-2 px-2 shadow sm:rounded-lg sm:px-8 w-full max-w-4xl">
+        <div className="px-12 py-24 text-left">
+          <h1 className="text-8xl font-bold">
+            <span className="text-[#1350f2]">Study</span>
+            <span className="text-[#FA4616]">Buddy</span>
+          </h1>
+          <h2 className="text-6xl font-bold mt-2 text-[#000000]">at UF</h2>
+          
+          <p className="mt-6 text-lg max-w-2xl text-[#000000]">
+            Join a growing community of students sharing study locations and real-time availability. 
+            Connect with other gators, share study spots, and stay focused together!
+          </p>
+          
 
-        {/* Optional: Additional buttons for navigation */}
-        <div className="mt-8 space-x-4">
-          <button
-            onClick={() => navigate('/map')}
-            className="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded-lg shadow transition duration-300"
-          >
-            Go to Map (Protected)
-          </button>
+          {/* Optional: Additional buttons for navigation */}
+          <div className="mt-8 space-x-4">
+            <button
+              onClick={() => navigate('/map')}
+              className="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded-lg shadow transition duration-300"
+            >
+              Go to Map (Protected)
+            </button>
+          </div>
+          </div>
         </div>
-        </div>
-      </div>
+        </div>  
+      </div>  
   )
 }
 
