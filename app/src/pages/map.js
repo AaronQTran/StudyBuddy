@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polygon } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import { motion, AnimatePresence } from "framer-motion";
 import L from 'leaflet';
 
 // Fix for default marker icons
@@ -65,33 +66,78 @@ function Map() {
 
   // State to manage the highlighted building
   const [highlightedBuilding, setHighlightedBuilding] = useState(null);
+  // Track the sidebar "pages"
+  const [page, setPage] = useState(1);
 
   return (
     <div className="flex h-screen w-screen">
-      {/* Left Sidebar */}
-      <div className="absolute top-4 left-4 h-[calc(100vh-2rem)] w-1/4 bg-white bg-opacity-90 shadow-2xl rounded-2xl p-4 z-[1000]">
-        <h2 className="text-4xl font-bold transform translate-y-64">
-          <span className="text-[#000000]">Would You Like To </span>
-          <span className="text-[#0938f8]"> Join</span>  
-          <span className="text-[#000000]"> or</span>
-          <span className="text-[#FA4616]"> Create</span>
-          <span className="text-[#000000]"> a Study Session?</span>
-        </h2>
+    {/* Floating Sidebar */}
+    <div className="absolute top-4 left-4 h-[calc(100vh-2rem)] w-1/4 bg-white bg-opacity-90 shadow-2xl rounded-2xl p-4 z-[1000] overflow-hidden">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={page}
+          initial={{ x: 300, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: -300, opacity: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          {page === 1 && (
+            <div className="text-center">
+              <h2 className="text-4xl font-bold transform translate-y-64">
+                <span className="text-[#000000]">Would You Like To </span>
+                <span className="text-[#0938f8]"> Join</span>  
+                <span className="text-[#000000]"> or</span>
+                <span className="text-[#FA4616]"> Create</span>
+                <span className="text-[#000000]"> a Study Session?</span>
+              </h2> 
+              <div className="flex justify-center space-x-4">
+                <button
+                  className="bg-blue-700 hover:bg-blue-800 text-white px-9 py-2 rounded-lg font-semibold transition transform translate-y-72"
+                  onClick={() => setPage(2)}
+                >
+                  Join
+                </button>
+                <button
+                  className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-2 rounded-lg font-semibold transition transform translate-y-72"
+                  onClick={() => setPage(3)}
+                >
+                  Create
+                </button>
+              </div>
+            </div>
+          )}
 
-        <div className="space-x-12 transform translate-y-72">
-          <button
-            className="bg-blue-700 hover:bg-blue-800 text-white px-9 py-2 rounded-lg font-semibold transition"
-          >
-              Join
-          </button>
+          {page === 2 && (
+            <div>
+              <h2 className="text-2xl font-bold mb-4">Join a Study Session</h2>
+              <p>Select a session from the list below:</p>
+              <ul className="mt-4">
+                
+              </ul>
+              <button
+                className="mt-4 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg"
+                onClick={() => setPage(1)}
+              >
+                Back
+              </button>
+            </div>
+          )}
 
-          <button 
-            className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-2 rounded-lg font-semibold transition"
-          >
-              Create 
-          </button>
-        </div>
-      </div>
+          {page === 3 && (
+            <div>
+              <h2 className="text-2xl font-bold mb-4">Pick a Study Spot!</h2>
+              
+              <button
+                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg"
+                onClick={() => setPage(1)}
+              >
+                Back
+              </button>
+            </div>
+          )}
+        </motion.div>
+      </AnimatePresence>
+    </div>
   
       {/* Map Container*/}
       <div className="w-full h-full">
