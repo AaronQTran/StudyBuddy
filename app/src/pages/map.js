@@ -13,15 +13,12 @@ L.Icon.Default.mergeOptions({
 });
 
 function Map() {
-  //Rectangle
-  {/*Main Content*/}
-  
   // Coordinates for library markers
   const libraries = [
-    { name: 'Marston Science Library', position: [29.647966553280117, -82.343966960907] },
-    { name: 'Smathers Library', position: [29.650847698728658, -82.34179973602296] },
-    { name: 'Library West', position: [29.651323219660075, -82.34292626380922] },
-    { name: 'Health Science Library', position: [29.640917189545437, -82.34488964080812] },
+    { name: 'Marston Science Library', position: [29.647966553280117, -82.343966960907], color: 'bg-blue-700', hover: 'hover:bg-blue-800', floors: [1,2,3,4,5] },
+    { name: 'Smathers Library', position: [29.650847698728658, -82.34179973602296], color: 'bg-orange-600', hover: 'hover:bg-orange-700', floors: [1,2,3,4]},
+    { name: 'Library West', position: [29.651323219660075, -82.34292626380922], color: 'bg-blue-700', hover: 'hover:bg-blue-800', floors: [1,2,3,4,5,6]},
+    { name: 'Health Science Library', position: [29.640917189545437, -82.34488964080812], color: 'bg-orange-600', hover: 'hover:bg-orange-700', floors: [1,2]},
   ];
 
   // Coordinates for building outlines (example coordinates for illustration)
@@ -66,8 +63,16 @@ function Map() {
 
   // State to manage the highlighted building
   const [highlightedBuilding, setHighlightedBuilding] = useState(null);
+  // Library use states
+  const [selectedLibrary, setSelectedLibrary] = useState(null);
+  const [selectedFloor, setSelectedFloor] = useState('');
   // Track the sidebar "pages"
   const [page, setPage] = useState(1);
+
+  const handleBackClick = () => {
+    setSelectedLibrary('');
+    setSelectedFloor('');
+  };
 
   return (
     <div className="flex h-screen w-screen">
@@ -125,14 +130,60 @@ function Map() {
 
           {page === 3 && (
             <div>
-              <h2 className="text-2xl font-bold mb-4">Pick a Study Spot!</h2>
-              
+            <h2 className="text-2xl font-bold mb-6">Pick a Study Spot!</h2>
+            
+            <div className="space-y-4">
+              {libraries.map((library) =>
+                selectedLibrary === library.name ? (
+                  <div
+                    key={library.name}
+                    className={`${library.color} relative shadow-lg p-6 rounded-lg border border-gray-300`}
+                  >
+                    <button
+                      onClick={handleBackClick}
+                      className="absolute top-2 right-2 text-white hover:text-red-500 text-xl font-bold"
+                    >
+                      ×
+                    </button>
+                    <h3 className="absolute top-2 left-2 text-lg font-semibold text-white mb-2">{library.name}</h3>
+                    <p className="text-white space-y-4"> 
+                    <label className="mb-2">Floor: </label>
+                    <select
+                      name="selectedFloor"
+                      className="w-3/4 p-2 border rounded-md mb-4 text-black"
+                      value={selectedFloor}
+                      onChange={(e) => setSelectedFloor(e.target.value)}
+                    >
+                      <option value="" disabled>
+                        Select Floor
+                      </option>
+                      {libraries.find(lib => lib.name === selectedLibrary)?.floors.map((floor, index) => (
+                          <option key={index} value={floor}>
+                            {floor}
+                          </option>
+                      ))}
+                    </select>
+
+                    </p>
+                  </div>
+                ) : (
+                  <button
+                    key={library.name}
+                    className={`${library.color} ${library.hover} text-white px-8 py-2 rounded-lg w-full text-left`}
+                    onClick={() => setSelectedLibrary(library.name)}
+                  >
+                    {library.name}
+                  </button>
+                )
+              )}
+
               <button
-                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg"
+                className="bg-gray-500 hover:bg-gray-600 text-white px-2 py-2 rounded-lg w-full"
                 onClick={() => setPage(1)}
               >
                 Back
               </button>
+              </div>
             </div>
           )}
         </motion.div>
