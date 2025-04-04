@@ -39,7 +39,7 @@ function Home() {
   return (
 
     <div className="min-h-screen bg-cover bg-center bg-[url('/src/background.jpg')]">
-      <div className="absolute inset-0 bg-gradient-to-b from-white/50 to white"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-white/20 to white/50"></div>
       <div className="relative">
       {/* Navbar */}
       <div className="flex justify-between items-center px-12 py-6">
@@ -70,7 +70,7 @@ function Home() {
         </div>
       </div> 
       {/* Main Content */} 
-      <div className="bg-white py-2 px-2 shadow sm:rounded-lg sm:px-8 w-full max-w-4xl">
+      <div className="bg-white bg-opacity-50 shadow rounded-lg p-2 sm:p-0 w-full max-w-4xl">
         <div className="px-12 py-24 text-left">
           <h1 className="text-8xl font-bold">
             <span className="text-[#1350f2]">Study</span>
