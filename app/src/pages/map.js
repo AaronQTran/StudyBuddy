@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef} from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polygon } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { motion, AnimatePresence } from "framer-motion";
@@ -61,6 +61,7 @@ function Map() {
     },
   ];
 
+  const mapRef = useRef(null);
   // State to manage the highlighted building
   const [highlightedBuilding, setHighlightedBuilding] = useState(null);
   // Library use states
@@ -72,6 +73,9 @@ function Map() {
   const handleBackClick = () => {
     setSelectedLibrary('');
     setSelectedFloor('');
+    if (mapRef.current) {
+      mapRef.current.setView([29.647966553280117, -82.343966960907], 17);
+    }
   };
 
   return (
@@ -138,6 +142,7 @@ function Map() {
                   <div
                     key={library.name}
                     className={`${library.color} relative shadow-lg p-6 rounded-lg border border-gray-300`}
+
                   >
                     <button
                       onClick={handleBackClick}
@@ -146,31 +151,85 @@ function Map() {
                       ×
                     </button>
                     <h3 className="absolute top-2 left-2 text-lg font-semibold text-white mb-2">{library.name}</h3>
-                    <p className="text-white space-y-4"> 
-                    <label className="mb-2">Floor: </label>
+                    
+                    <div className="text-white space-y-18 text-left">
+
+                  {/* Floor */}
+                  <div className="flex space-x-4 space-y-4">
+                    <label className="w-20 font-semibold transform translate-y-5">Floor:</label>
                     <select
                       name="selectedFloor"
-                      className="w-3/4 p-2 border rounded-md mb-4 text-black"
+                      className="flex-1 p-2 border rounded-md text-black"
                       value={selectedFloor}
                       onChange={(e) => setSelectedFloor(e.target.value)}
                     >
-                      <option value="" disabled>
-                        Select Floor
-                      </option>
+                      <option value="" disabled>Select Floor</option>
                       {libraries.find(lib => lib.name === selectedLibrary)?.floors.map((floor, index) => (
-                          <option key={index} value={floor}>
-                            {floor}
-                          </option>
+                        <option key={index} value={floor}>{floor}</option>
                       ))}
                     </select>
-
-                    </p>
                   </div>
-                ) : (
+
+                  {/* Duration section */}
+                  <div>
+                    <label className="block mb-2 font-semibold">Duration:</label>
+
+                    <div className="space-y-4">
+
+                      {/* Day */}
+                      <div className="flex items-center space-x-4">
+                        <label htmlFor="day" className="w-20 transform translate-x-8">Day:</label>
+                        <select
+                          id="day"
+                          name="day"
+                          className="flex-1 p-2 border rounded-md text-black"
+                        >
+                          <option value="">Select a day</option>
+                          <option value="Monday">Monday</option>
+                          <option value="Tuesday">Tuesday</option>
+                          <option value="Wednesday">Wednesday</option>
+                          <option value="Thursday">Thursday</option>
+                          <option value="Friday">Friday</option>
+                          <option value="Saturday">Saturday</option>
+                          <option value="Sunday">Sunday</option>
+                        </select>
+                      </div>
+
+                      {/* Start Time */}
+                      <div className="flex items-center space-x-4">
+                        <label htmlFor="startTime" className="w-20 transform translate-x-8">Start:</label>
+                        <input
+                          type="time"
+                          id="startTime"
+                          name="startTime"
+                          className="flex-1 border border-gray-300 rounded-lg p-2 text-black"
+                        />
+                      </div>
+
+                      {/* End Time */}
+                      <div className="flex items-center space-x-4">
+                        <label htmlFor="endTime" className="w-20 transform translate-x-8">End:</label>
+                        <input
+                          type="time"
+                          id="endTime"
+                          name="endTime"
+                          className="flex-1 border border-gray-300 rounded-lg p-2 text-black"
+                        />
+                      </div>
+
+                    </div>
+                  </div>
+
+                </div>
+
+                  </div>
+                ) : (                
                   <button
                     key={library.name}
                     className={`${library.color} ${library.hover} text-white px-8 py-2 rounded-lg w-full text-left`}
-                    onClick={() => setSelectedLibrary(library.name)}
+                    onClick={() => {
+                      setSelectedLibrary(library.name);
+                    }}             
                   >
                     {library.name}
                   </button>
@@ -200,6 +259,7 @@ function Map() {
           style={{ height: '100vh', width: '100%' }}
           scrollWheelZoom={true}
           zoomControl={false}
+          whenCreated={(mapInstance) => { mapRef.current = mapInstance; }}
         >
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -235,5 +295,4 @@ function Map() {
     </div>
   );  
 }
-
 export default Map;
