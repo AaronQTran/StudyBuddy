@@ -1,4 +1,4 @@
-import React, { useState, useRef} from 'react';
+import React, { useState, useRef, useEffect} from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polygon } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { motion, AnimatePresence } from "framer-motion";
@@ -14,6 +14,7 @@ L.Icon.Default.mergeOptions({
 
 function Map() {
   // Coordinates for library markers
+
   const libraries = [
     { name: 'Marston Science Library', position: [29.647966553280117, -82.343966960907], color: 'bg-blue-700', hover: 'hover:bg-blue-800', floors: [1,2,3,4,5] },
     { name: 'Smathers Library', position: [29.650847698728658, -82.34179973602296], color: 'bg-orange-600', hover: 'hover:bg-orange-700', floors: [1,2,3,4]},
@@ -60,14 +61,15 @@ function Map() {
       ],
     },
   ];
-
   const mapRef = useRef(null);
   // State to manage the highlighted building
   const [highlightedBuilding, setHighlightedBuilding] = useState(null);
   // Library use states
   const [selectedLibrary, setSelectedLibrary] = useState(null);
   const [selectedFloor, setSelectedFloor] = useState('');
-  // Track the sidebar "pages"
+  const [selectedDate, setSelectedDate] = useState('');
+  const [startTime, setStartTime] = useState();
+  const [endTime, setEndTime] = useState();
   const [page, setPage] = useState(1);
 
   const handleBackClick = () => {
@@ -77,6 +79,40 @@ function Map() {
       mapRef.current.setView([29.647966553280117, -82.343966960907], 17);
     }
   };
+
+  //Move this function outside of handleBackClick
+  const handleSubmit = async () => {
+    //for now i dont want to include people to get the basic MVP done.
+    //we want to get course numbers here - bring it up next meeting
+    //notes and focus level needed
+    var id = "id" + Math.random().toString(16).slice(2)
+    console.log(id)
+    const data = {
+      ssid: id,
+      building: selectedLibrary,
+      floor: selectedFloor,
+      date: selectedDate,
+      startTime: startTime,
+      endTime: endTime
+    }
+    console.log(data)
+    try{
+      const response = await fetch("http://localhost:3000/api/create_session", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.json();
+      if(response.ok){
+        console.log(result.message); 
+      }else{
+        console.log(result.error);
+      }
+    }catch(error){
+      console.log('error in trying to create session')
+    }
+  }
 
   return (
     <div className="flex h-screen w-screen">
@@ -178,21 +214,15 @@ function Map() {
 
                       {/* Day */}
                       <div className="flex items-center space-x-4">
-                        <label htmlFor="day" className="w-20 transform translate-x-8">Day:</label>
-                        <select
-                          id="day"
-                          name="day"
+                        <label htmlFor="date" className="w-20 transform translate-x-8">Date:</label>
+                        <input
+                          type="date"
+                          id="date"
+                          name="date"
                           className="flex-1 p-2 border rounded-md text-black"
-                        >
-                          <option value="">Select a day</option>
-                          <option value="Monday">Monday</option>
-                          <option value="Tuesday">Tuesday</option>
-                          <option value="Wednesday">Wednesday</option>
-                          <option value="Thursday">Thursday</option>
-                          <option value="Friday">Friday</option>
-                          <option value="Saturday">Saturday</option>
-                          <option value="Sunday">Sunday</option>
-                        </select>
+                          value={selectedDate}
+                          onChange={(e) => setSelectedDate(e.target.value)}
+                        />
                       </div>
 
                       {/* Start Time */}
@@ -203,6 +233,7 @@ function Map() {
                           id="startTime"
                           name="startTime"
                           className="flex-1 border border-gray-300 rounded-lg p-2 text-black"
+                          onChange={(e) =>setStartTime(e.target.value)}
                         />
                       </div>
 
@@ -214,6 +245,7 @@ function Map() {
                           id="endTime"
                           name="endTime"
                           className="flex-1 border border-gray-300 rounded-lg p-2 text-black"
+                          onChange={(e) =>setEndTime(e.target.value)}
                         />
                       </div>
 
@@ -242,6 +274,12 @@ function Map() {
               >
                 Back
               </button>
+              <button
+                  className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-2 rounded-lg font-semibold transition transform translate-y-24"
+                  onClick={handleSubmit}
+                >
+                  Fetch
+                </button>
               </div>
             </div>
           )}
