@@ -1,4 +1,6 @@
-import React, { useState, useRef, useEffect} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { auth, db } from "../firebase";
+import { doc, getDoc } from "firebase/firestore";
 import { MapContainer, TileLayer, Marker, Popup, Polygon } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { motion, AnimatePresence } from "framer-motion";
@@ -11,6 +13,7 @@ L.Icon.Default.mergeOptions({
   iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
   shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
 });
+
 
 function Map() {
   // Coordinates for library markers
@@ -72,12 +75,20 @@ function Map() {
   const [endTime, setEndTime] = useState();
   const [page, setPage] = useState(1);
 
+  //reset all parameters
   const handleBackClick = () => {
     setSelectedLibrary('');
     setSelectedFloor('');
     if (mapRef.current) {
       mapRef.current.setView([29.647966553280117, -82.343966960907], 17);
     }
+    setSelectedDate(''); 
+    setStartTime(''); 
+    setEndTime('');
+    setFocusLevel(0); 
+    setGroupSize(''); 
+    setNotes(''); 
+    setSelectedCourse(''); 
   };
 
   //Move this function outside of handleBackClick
@@ -85,15 +96,21 @@ function Map() {
     //for now i dont want to include people to get the basic MVP done.
     //we want to get course numbers here - bring it up next meeting
     //notes and focus level needed
+
+    //done! - aicha 
     var id = "id" + Math.random().toString(16).slice(2)
     console.log(id)
     const data = {
       ssid: id,
       building: selectedLibrary,
       floor: selectedFloor,
+      course: selectedCourse,
       date: selectedDate,
       startTime: startTime,
-      endTime: endTime
+      endTime: endTime,
+      focusLevel: focusLevel,
+      groupSize: groupSize, 
+      notes: notes
     }
     console.log(data)
     try{
@@ -113,6 +130,37 @@ function Map() {
       console.log('error in trying to create session')
     }
   }
+
+  //components 
+  const [focusLevel, setFocusLevel] = useState(0); 
+  const [groupSize, setGroupSize] = useState(1);
+  const [notes, setNotes] = useState('');
+  const [userCourses, setUserCourses] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState("");
+
+  const focusLabels = {
+    0: "Just For Vibes",
+    1: "Casual",
+    2: "Semi-Focused",
+    3: "Focused",
+    4: "Locked In",
+    5: "Extremely Locked In" 
+  };
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      const userId = auth.currentUser.uid;
+      const userDocRef = doc(db, "users", userId);
+      const userSnap = await getDoc(userDocRef);
+
+      if (userSnap.exists()) {
+        const data = userSnap.data();
+        setUserCourses(data.courses || []);
+      }
+    };
+
+    fetchCourses();
+  }, []);
 
   return (
     <div className="flex h-screen w-screen">
@@ -169,7 +217,7 @@ function Map() {
           )}
 
           {page === 3 && (
-            <div>
+            <div className="h-screen overflow-y-auto w-full">
             <h2 className="text-2xl font-bold mb-6">Pick a Study Spot!</h2>
             
             <div className="space-y-4">
@@ -205,7 +253,22 @@ function Map() {
                       ))}
                     </select>
                   </div>
-
+                  {/* Class */}
+                  <div className="my-4">
+                    <label className="mb-2 font-semibold block">Select Course:</label>
+                    <select
+                      value={selectedCourse}
+                      onChange={(e) => setSelectedCourse(e.target.value)}
+                      className="w-full p-2 border border-gray-300 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    >
+                      <option value="">-- Select a course --</option>
+                      {userCourses.map((course, index) => (
+                        <option key={index} value={course}>
+                          {course}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                   {/* Duration section */}
                   <div>
                     <label className="block mb-2 font-semibold">Duration:</label>
@@ -248,9 +311,53 @@ function Map() {
                           onChange={(e) =>setEndTime(e.target.value)}
                         />
                       </div>
-
                     </div>
                   </div>
+                  {/* Focus Level */}
+                  <div className="my-4">
+                    <label className="mb-2 font-semibold block">Focus Level:</label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="5"
+                      step="1"
+                      value={focusLevel}
+                      onChange={(e) => setFocusLevel(e.target.value)}
+                      className="w-full accent-blue-500"
+                    />
+                    <div className="text-sm text-white mt-1">Current Level: {focusLabels[focusLevel]}</div>
+                  </div>
+                  {/* Group Size */}
+                  <div className="my-4">
+                    <label className="mb-2 font-semibold">Group Size: </label>
+                    <input
+                      type="number"
+                      min="1"
+                      max="15"
+                      value={groupSize}
+                      onChange={(e) => setGroupSize(Number(e.target.value))}
+                      className="w-20 p-2 border border-gray-300 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                      placeholder="e.g. 1"
+                    />
+                  </div>
+                  {/* Notes */}
+                  <div className="my-4">
+                    <label className="mb-2 font-semibold block">Notes:</label>
+                    <textarea
+                      value={notes}
+                      onChange={(e) => setNotes(e.target.value)}
+                      placeholder="Write any additional information you want people to know here!"
+                      rows={4}
+                      className="w-full p-2 border border-gray-300 text-black rounded resize-none focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+                  </div>
+                  {/* Create Button */}
+                  <button
+                    className="bg-gray-50 hover:bg-gray-200 text-black px-8 py-2 rounded-lg font-semibold"
+                    onClick={handleSubmit}
+                  >
+                    Create
+                  </button>
 
                 </div>
 
@@ -274,12 +381,6 @@ function Map() {
               >
                 Back
               </button>
-              <button
-                  className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-2 rounded-lg font-semibold transition transform translate-y-24"
-                  onClick={handleSubmit}
-                >
-                  Fetch
-                </button>
               </div>
             </div>
           )}
