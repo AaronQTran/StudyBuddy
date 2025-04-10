@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { auth, db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup, Polygon } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { motion, AnimatePresence } from "framer-motion";
@@ -96,7 +97,7 @@ function Map() {
     //for now i dont want to include people to get the basic MVP done.
     //we want to get course numbers here - bring it up next meeting
     //notes and focus level needed
-
+    setPage(4);
     //done! - aicha 
     var id = "id" + Math.random().toString(16).slice(2)
     console.log(id)
@@ -123,6 +124,7 @@ function Map() {
       const result = await response.json();
       if(response.ok){
         console.log(result.message); 
+        
       }else{
         console.log(result.error);
       }
@@ -131,12 +133,13 @@ function Map() {
     }
   }
 
-  //components 
+  //use states 
   const [focusLevel, setFocusLevel] = useState(0); 
   const [groupSize, setGroupSize] = useState(1);
   const [notes, setNotes] = useState('');
   const [userCourses, setUserCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState("");
+  const navigate = useNavigate();
 
   const focusLabels = {
     0: "Just For Vibes",
@@ -337,7 +340,7 @@ function Map() {
                       value={groupSize}
                       onChange={(e) => setGroupSize(Number(e.target.value))}
                       className="w-20 p-2 border border-gray-300 text-black rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-                      placeholder="e.g. 1"
+                      placeholder="e.g. 7"
                     />
                   </div>
                   {/* Notes */}
@@ -383,6 +386,52 @@ function Map() {
               </button>
               </div>
             </div>
+          )}
+
+          {page === 4 && (
+            <div className="p-4">
+            <h2 className="text-2xl font-semibold">Your Study Session Has Been Created!</h2>
+            <p className="mt-2">Here's the summary of your session:</p>
+            <ul className="mt-2">
+              <li><strong>Course:</strong> {selectedCourse}</li>
+              <li><strong>Location:</strong> {selectedLibrary}, {selectedFloor}</li>
+              <li><strong>Date:</strong> {selectedDate}</li>
+              <li><strong>Time:</strong> {startTime} - {endTime}</li>
+              <li><strong>Focus Level:</strong> {focusLabels[focusLevel]}</li>
+              <li><strong>Group Size:</strong> {groupSize}</li>
+              <li><strong>Notes:</strong> {notes}</li>
+            </ul>
+          
+            {/* Back Home */}
+            <div className="mt-4">
+              <button
+                onClick={() => navigate("/home")}
+                className="bg-blue-700 hover:bg-blue-800 text-white px-6 py-2 rounded-lg font-semibold"
+              >
+                Back to Home
+              </button>
+            </div>
+          
+            {/* Another Session */}
+            <div className="mt-4">
+              <button
+                onClick={() => setPage(1)} 
+                className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-lg font-semibold"
+              >
+                Create Another Session
+              </button>
+            </div>
+          
+            {/* Potential: Link for sharing */}
+            <div className="mt-4">
+              <button
+                onClick={() => alert("Sharing options coming soon!")}
+                className="bg-gray-200 hover:bg-gray-300 text-black px-6 py-2 rounded-lg font-semibold"
+              >
+                Share Your Session
+              </button>
+            </div>
+          </div>          
           )}
         </motion.div>
       </AnimatePresence>
