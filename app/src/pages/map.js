@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { auth, db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup, Polygon } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { motion, AnimatePresence } from "framer-motion";
@@ -139,8 +138,6 @@ function Map() {
   const [notes, setNotes] = useState('');
   const [userCourses, setUserCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState("");
-  const navigate = useNavigate();
-
   const focusLabels = {
     0: "Just For Vibes",
     1: "Casual",
@@ -405,7 +402,7 @@ function Map() {
             {/* Back Home */}
             <div className="mt-4">
               <button
-                onClick={() => navigate("/home")}
+                onClick={() => setPage(1)}
                 className="bg-blue-700 hover:bg-blue-800 text-white px-6 py-2 rounded-lg font-semibold"
               >
                 Back to Home
@@ -415,7 +412,7 @@ function Map() {
             {/* Another Session */}
             <div className="mt-4">
               <button
-                onClick={() => setPage(1)} 
+                onClick={() => setPage(3)} 
                 className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-lg font-semibold"
               >
                 Create Another Session
