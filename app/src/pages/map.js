@@ -65,8 +65,10 @@ function Map() {
     },
   ];
   const mapRef = useRef(null);
+  
   // State to manage the highlighted building
   const [highlightedBuilding, setHighlightedBuilding] = useState(null);
+  
   // Library use states
   const [selectedLibrary, setSelectedLibrary] = useState(null);
   const [selectedFloor, setSelectedFloor] = useState('');
@@ -412,7 +414,10 @@ function Map() {
             {/* Another Session */}
             <div className="mt-4">
               <button
-                onClick={() => setPage(3)} 
+                onClick={() => {
+                  handleBackClick();
+                  setPage(3);         
+                }}
                 className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-lg font-semibold"
               >
                 Create Another Session
