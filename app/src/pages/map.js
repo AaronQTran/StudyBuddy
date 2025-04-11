@@ -4,6 +4,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { MapContainer, TileLayer, Marker, Popup, Polygon } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { motion, AnimatePresence } from "framer-motion";
+import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 
 // Fix for default marker icons
@@ -23,6 +24,7 @@ function Map() {
     { name: 'Smathers Library', position: [29.650847698728658, -82.34179973602296], color: 'bg-orange-600', hover: 'hover:bg-orange-700', floors: [1,2,3,4]},
     { name: 'Library West', position: [29.651323219660075, -82.34292626380922], color: 'bg-blue-700', hover: 'hover:bg-blue-800', floors: [1,2,3,4,5,6]},
     { name: 'Health Science Library', position: [29.640917189545437, -82.34488964080812], color: 'bg-orange-600', hover: 'hover:bg-orange-700', floors: [1,2]},
+    { name: 'Reitz Union', position: [29.646316, -82.347701], color: 'bg-blue-600', hover: 'hover:bg-blue-700', floors: ['LL','G', '1','2','3']},
   ];
 
   // Coordinates for building outlines (example coordinates for illustration)
@@ -30,28 +32,57 @@ function Map() {
     {
       name: 'Marston Science Library',
       coordinates: [
-        [29.64794, -82.34403],
-        [29.64801, -82.34392],
-        [29.64793, -82.34385],
-        [29.64786, -82.34397],
+        [29.647691, -82.34365],
+        [29.648043, -82.343649],
+        [29.648043, -82.343718],
+        [29.648218, -82.34372],
+        [29.6482, -82.344045],
+        [29.648116, -82.34405],
+        [29.648041, -82.344147],
+        [29.648036, -82.344241],
+        [29.647752, -82.344257],
+        [29.647747, -82.344053],
+        [29.647696, -82.344055],
       ],
     },
     {
       name: 'Smathers Library',
       coordinates: [
-        [29.65087, -82.34189],
-        [29.65092, -82.34172],
-        [29.65079, -82.34165],
-        [29.65075, -82.34185],
+        [29.65123, -82.341515],
+        [29.65123, -82.342154],
+        [29.651092, -82.342154],
+        [29.651092, -82.342022],
+        [29.651088, -82.342025],
+        [29.650967, -82.342017],
+        [29.650962, -82.341979],
+        [29.650512, -82.341974],
+        [29.650535, -82.34155]
+      ],
+    },
+    {
+      name: 'Reitz Union',
+      coordinates: [
+        [29.646638, -82.346998],
+        [29.646656, -82.348725],
+        [29.646288, -82.348731],
+        [29.646288, -82.348114],
+        [29.645785, -82.34814], 
+        [29.645775, -82.347588],
+        [29.646158, -82.347411],
+        [29.646214, -82.347019]
       ],
     },
     {
       name: 'Library West',
       coordinates: [
-        [29.65136, -82.34301],
-        [29.65138, -82.34285],
-        [29.65127, -82.34282],
-        [29.65124, -82.34300],
+        [29.651099, -82.342485],
+        [29.651407, -82.342485],
+        [29.651407, -82.342548],
+        [29.651687, -82.342551],
+        [29.651692, -82.34327],
+        [29.651414, -82.343272],
+        [29.651414, -82.343335],
+        [29.651099, -82.343335],
       ],
     },
     {
@@ -65,6 +96,13 @@ function Map() {
     },
   ];
   const mapRef = useRef(null);
+
+  function onMapClick(e) {
+    const map = e.target;
+    const { lat, lng } = e.latlng;
+
+    console.log(`Clicked at latitude: ${lat}, longitude: ${lng}`);
+  }
   
   // State to manage the highlighted building
   const [highlightedBuilding, setHighlightedBuilding] = useState(null);
@@ -450,6 +488,7 @@ function Map() {
           scrollWheelZoom={true}
           zoomControl={false}
           whenCreated={(mapInstance) => { mapRef.current = mapInstance; }}
+          onClick={onMapClick} // Attach the click event handler
         >
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
