@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useMap } from 'react-leaflet';
 import { auth, db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { MapContainer, TileLayer, Marker, Popup, Polygon } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { motion, AnimatePresence } from "framer-motion";
-import { useMap } from 'react-leaflet';
 import L from 'leaflet';
 
 // Fix for default marker icons
@@ -98,11 +98,12 @@ function Map() {
   const mapRef = useRef(null);
 
   function onMapClick(e) {
-    const map = e.target;
     const { lat, lng } = e.latlng;
 
     console.log(`Clicked at latitude: ${lat}, longitude: ${lng}`);
   }
+  const defaultCenter = [29.647966553280117, -82.343966960907];
+  const defaultZoom = 17;
   
   // State to manage the highlighted building
   const [highlightedBuilding, setHighlightedBuilding] = useState(null);
@@ -187,6 +188,7 @@ function Map() {
     5: "Extremely Locked In" 
   };
 
+  //function to get the courses
   useEffect(() => {
     const fetchCourses = async () => {
       const userId = auth.currentUser.uid;
@@ -201,6 +203,38 @@ function Map() {
 
     fetchCourses();
   }, []);
+
+  //function to make the map zoom
+
+  function ZoomToMarker({ position }) {
+    const map = useMap();
+  
+    useEffect(() => {
+      if (position) {
+        map.flyTo(position, 18, {
+          animate: true,
+          duration: 1, // duration in seconds
+        });
+      }
+    }, [position, map]);
+  
+    return null;
+  }
+
+  //function to reset the map
+  function ResetMapView({ center, zoom }) {
+    const map = useMap();
+  
+    useEffect(() => {
+      map.flyTo(center, zoom, {
+        animate: true,
+        duration: 1.5,
+      });
+    }, [center, zoom, map]);
+  
+    return null;
+  }
+
 
   return (
     <div className="flex h-screen w-screen">
@@ -269,7 +303,10 @@ function Map() {
 
                   >
                     <button
-                      onClick={handleBackClick}
+                      onClick={() => {
+                        setSelectedLibrary(null);
+                        handleBackClick();
+                      }}
                       className="absolute top-2 right-2 text-white hover:text-red-500 text-xl font-bold"
                     >
                       ×
@@ -495,6 +532,17 @@ function Map() {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
   
+          {/* Zoom */}
+          {selectedLibrary ? (
+              <ZoomToMarker
+                position={
+                  libraries.find(lib => lib.name === selectedLibrary)?.position
+                }
+              />
+            ) : (
+              <ResetMapView center={defaultCenter} zoom={defaultZoom} />
+            )
+          }
           {/* Library Markers */}
           {libraries.map((library, index) => (
             <Marker key={index} position={library.position}>
