@@ -115,6 +115,7 @@ function Map() {
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState();
   const [page, setPage] = useState(1);
+  const [shouldResetMap, setShouldResetMap] = useState(false);
 
   //reset all parameters
   const handleBackClick = () => {
@@ -222,7 +223,7 @@ function Map() {
   }
 
   //function to reset the map
-  function ResetMapView({ center, zoom }) {
+  function ResetMapView({ center, zoom, onReset  }) {
     const map = useMap();
   
     useEffect(() => {
@@ -230,8 +231,9 @@ function Map() {
         animate: true,
         duration: 1.5,
       });
+      if (onReset) onReset();
     }, [center, zoom, map]);
-  
+
     return null;
   }
 
@@ -305,6 +307,7 @@ function Map() {
                     <button
                       onClick={() => {
                         setSelectedLibrary(null);
+                        setShouldResetMap(true);
                         handleBackClick();
                       }}
                       className="absolute top-2 right-2 text-white hover:text-red-500 text-xl font-bold"
@@ -534,15 +537,20 @@ function Map() {
   
           {/* Zoom */}
           {selectedLibrary ? (
-              <ZoomToMarker
-                position={
-                  libraries.find(lib => lib.name === selectedLibrary)?.position
-                }
-              />
-            ) : (
-              <ResetMapView center={defaultCenter} zoom={defaultZoom} />
-            )
-          }
+            <ZoomToMarker
+              position={
+                libraries.find(lib => lib.name === selectedLibrary)?.position
+              }
+            />
+          ) : shouldResetMap ? (
+            <ResetMapView
+              center={defaultCenter}
+              zoom={defaultZoom}
+              onReset={() => setShouldResetMap(false)} // reset flag
+            />
+          ) : null}
+
+
           {/* Library Markers */}
           {libraries.map((library, index) => (
             <Marker key={index} position={library.position}>
@@ -564,6 +572,10 @@ function Map() {
               eventHandlers={{
                 mouseover: () => setHighlightedBuilding(building.name),
                 mouseout: () => setHighlightedBuilding(null),
+                click: () => {
+                  setSelectedLibrary(building.name);
+                  setPage(3);
+                },
               }}
             />
           ))}
