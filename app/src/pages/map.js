@@ -20,12 +20,90 @@ function Map() {
   // Coordinates for library markers
 
   const libraries = [
-    { name: 'Marston Science Library', position: [29.647966553280117, -82.343966960907], color: 'bg-blue-700', hover: 'hover:bg-blue-800', floors: [1,2,3,4,5] },
-    { name: 'Smathers Library', position: [29.650847698728658, -82.34179973602296], color: 'bg-orange-600', hover: 'hover:bg-orange-700', floors: [1,2,3,4]},
-    { name: 'Library West', position: [29.651323219660075, -82.34292626380922], color: 'bg-blue-700', hover: 'hover:bg-blue-800', floors: [1,2,3,4,5,6]},
-    { name: 'Health Science Library', position: [29.640917189545437, -82.34488964080812], color: 'bg-orange-600', hover: 'hover:bg-orange-700', floors: [1,2]},
-    { name: 'Reitz Union', position: [29.646316, -82.347701], color: 'bg-blue-600', hover: 'hover:bg-blue-700', floors: ['LL','G', '1','2','3']},
+    { name: 'Marston Science Library', 
+      position: [29.647966553280117, -82.343966960907], 
+      color: 'bg-blue-700', 
+      hover: 'hover:bg-blue-800', 
+      floors: [1,2,3,4,5], 
+      hours: {
+        Sunday : { open: "10:00", close: "23:59" },
+        Monday : { open: "0:00", close: "23:59" },
+        Tuesday : { open: "0:00", close: "23:59" }, 
+        Wednesday : { open: "0:00", close: "23:59" }, 
+        Thursday : { open: "0:00", close: "23:59" }, 
+        Friday : { open: "0:00", close: "22:00" }, 
+        Saturday : { open: "9:00", close: "20:00" }
+      } 
+    },
+    { name: 'Smathers Library', 
+      position: [29.650847698728658, -82.34179973602296], 
+      color: 'bg-orange-600', 
+      hover: 'hover:bg-orange-700', 
+      floors: [1,2,3,4], 
+      hours: {
+        Sunday : { open: "2:00", close: "22:00" },
+        Monday : { open: "8:00", close: "19:00" },
+        Tuesday : { open: "8:00", close: "19:00" },
+        Wednesday : { open: "8:00", close: "19:00" },
+        Thursday : { open: "8:00", close: "19:00" },
+        Friday : { open: "8:00", close: "17:00" },
+        Saturday : null
+      }
+    },
+    { name: 'Library West', 
+      position: [29.651323219660075, -82.34292626380922], 
+      color: 'bg-blue-700', 
+      hover: 'hover:bg-blue-800', 
+      floors: [1,2,3,4,5,6], 
+      hours: {
+        Sunday : { open: "10:00", close: "1:00" },
+        Monday : { open: "8:00", close: "1:00" },
+        Tuesday : { open: "8:00", close: "1:00" },
+        Wednesday : { open: "8:00", close: "1:00" },
+        Thursday : { open: "8:00", close: "1:00" },
+        Friday : { open: "8:00", close: "22:00" },
+        Saturday : { open: "9:00", close: "20:00" }
+      }
+    },
+    { name: 'Health Science Library', 
+      position: [29.640917189545437, -82.34488964080812], 
+      color: 'bg-orange-600', 
+      hover: 'hover:bg-orange-700', 
+      floors: [1,2], 
+      hours: {
+        Sunday : { open: "13:00", close: "22:00" },
+        Monday : { open: "8:00", close: "22:00" },
+        Tuesday : { open: "8:00", close: "22:00" },
+        Wednesday : { open: "8:00", close: "22:00" },
+        Thursday : { open: "8:00", close: "22:00" },
+        Friday : { open: "8:00", close: "17:00" },
+        Saturday : { open: "13:00", close: "17:00" }
+      }
+    },
+    { name: 'Reitz Union', 
+      position: [29.646316, -82.347701], 
+      color: 'bg-blue-600', 
+      hover: 'hover:bg-blue-700', 
+      floors: ['LL','G', '1','2','3'], 
+      hours: {
+        Sunday : { open: "9:00", close: "21:00" },
+        Monday : { open: "7:00", close: "23:00" },
+        Tuesday : { open: "7:00", close: "23:00" },
+        Wednesday : { open: "7:00", close: "23:00" },
+        Thursday : { open: "7:00", close: "23:00" },
+        Friday : { open: "7:00", close: "23:00" },
+        Saturday : { open: "9:00", close: "21:00" }
+      }
+    },
   ];
+  
+  //function to convert the date to a day of the week: 
+  function getDayOfWeek(dateStr) {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { weekday: 'long' }); 
+  }
+
+
 
   // Coordinates for building outlines (example coordinates for illustration)
   const buildingOutlines = [
@@ -116,6 +194,22 @@ function Map() {
   const [endTime, setEndTime] = useState();
   const [page, setPage] = useState(1);
   const [shouldResetMap, setShouldResetMap] = useState(false);
+  const today = new Date().toISOString().split("T")[0];
+  const selectedLibObj = libraries.find(lib => lib.name === selectedLibrary);
+  const dayOfWeek = getDayOfWeek(selectedDate);
+  const libHours = selectedLibObj?.hours?.[dayOfWeek];
+  const [startTimeWarning, setStartTimeWarning] = useState(false);
+  const [endTimeWarning, setEndTimeWarning] = useState(false);
+  const canCreateSession =
+  selectedLibrary &&
+  selectedFloor &&
+  selectedCourse &&
+  selectedDate &&
+  startTime &&
+  endTime &&
+  startTime < endTime &&
+  groupSize;
+
 
   //reset all parameters
   const handleBackClick = () => {
@@ -237,6 +331,38 @@ function Map() {
     return null;
   }
 
+  const handleStartTimeChange = (time) => {
+    setStartTime(time);
+  
+    if (libHours && (time < libHours.open || time > libHours.close)) {
+      setStartTimeWarning(true);
+    } else {
+      setStartTimeWarning(false);
+    }
+  };
+  
+  const handleEndTimeChange = (time) => {
+    setEndTime(time);
+  
+    if (libHours && (time < startTime || time > libHours.close)) {
+      setEndTimeWarning(true);
+    } else {
+      setEndTimeWarning(false);
+    }
+  };
+
+  //change to am/pm
+  const formatTimeTo12Hour = (timeStr) => {
+    const [hour, minute] = timeStr.split(':');
+    const date = new Date();
+    date.setHours(+hour, +minute);
+    return date.toLocaleTimeString([], {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    });
+  };
+
 
   return (
     <div className="flex h-screen w-screen">
@@ -320,7 +446,7 @@ function Map() {
 
                   {/* Floor */}
                   <div className="flex space-x-4 space-y-4">
-                    <label className="w-20 font-semibold transform translate-y-5">Floor:</label>
+                    <label className="w-20 font-semibold transform translate-y-5">Floor*:</label>
                     <select
                       name="selectedFloor"
                       className="flex-1 p-2 border rounded-md text-black"
@@ -335,7 +461,7 @@ function Map() {
                   </div>
                   {/* Class */}
                   <div className="my-4">
-                    <label className="mb-2 font-semibold block">Select Course:</label>
+                    <label className="mb-2 font-semibold block">Select Course*:</label>
                     <select
                       value={selectedCourse}
                       onChange={(e) => setSelectedCourse(e.target.value)}
@@ -351,7 +477,7 @@ function Map() {
                   </div>
                   {/* Duration section */}
                   <div>
-                    <label className="block mb-2 font-semibold">Duration:</label>
+                    <label className="block mb-2 font-semibold">Duration*:</label>
 
                     <div className="space-y-4">
 
@@ -362,6 +488,8 @@ function Map() {
                           type="date"
                           id="date"
                           name="date"
+                          min={today}
+                          max="2025-12-31"
                           className="flex-1 p-2 border rounded-md text-black"
                           value={selectedDate}
                           onChange={(e) => setSelectedDate(e.target.value)}
@@ -369,28 +497,55 @@ function Map() {
                       </div>
 
                       {/* Start Time */}
-                      <div className="flex items-center space-x-4">
+                      <div className="flex items-center space-x-4"> 
                         <label htmlFor="startTime" className="w-20 transform translate-x-8">Start:</label>
-                        <input
-                          type="time"
-                          id="startTime"
-                          name="startTime"
-                          className="flex-1 border border-gray-300 rounded-lg p-2 text-black"
-                          onChange={(e) =>setStartTime(e.target.value)}
-                        />
+                        {libHours ? (
+                          <input
+                            type="time"
+                            id="startTime"
+                            name="startTime"
+                            className="flex-1 border border-gray-300 rounded-lg p-2 text-black"
+                            min={libHours.open}
+                            max={libHours.close}
+                            value={startTime}
+                            onChange={(e) => handleStartTimeChange(e.target.value)}
+                          />
+                        ) : (
+                          <p className="text-white">Library is closed</p>
+                        )}
                       </div>
 
                       {/* End Time */}
                       <div className="flex items-center space-x-4">
                         <label htmlFor="endTime" className="w-20 transform translate-x-8">End:</label>
-                        <input
-                          type="time"
-                          id="endTime"
-                          name="endTime"
-                          className="flex-1 border border-gray-300 rounded-lg p-2 text-black"
-                          onChange={(e) =>setEndTime(e.target.value)}
-                        />
+                        {libHours ? (
+                          <input
+                            type="time"
+                            id="endTime"
+                            name="endTime"
+                            className="flex-1 border border-gray-300 rounded-lg p-2 text-black"
+                            min={startTime || libHours.open}
+                            max={libHours.close}
+                            value={endTime}
+                            onChange={(e) => handleEndTimeChange(e.target.value)}
+                          />
+                        ) : (
+                          <p className="text-white">Library is closed</p>
+                        )}
                       </div>
+
+                      {/* Warning Message */}
+                      {startTimeWarning && (
+                        <p className="text-yellow-400 text-sm mt-1">
+                          ⚠️ Start time must be between {formatTimeTo12Hour(libHours.open)} and {formatTimeTo12Hour(libHours.close)}
+                        </p>
+                      )}
+
+                      {endTimeWarning && (
+                        <p className="text-yellow-400 text-sm mt-1">
+                          ⚠️ End time must be after the start time and before {formatTimeTo12Hour(libHours.close)}
+                        </p>
+                      )}
                     </div>
                   </div>
                   {/* Focus Level */}
@@ -409,7 +564,7 @@ function Map() {
                   </div>
                   {/* Group Size */}
                   <div className="my-4">
-                    <label className="mb-2 font-semibold">Group Size: </label>
+                    <label className="mb-2 font-semibold">Group Size*: </label>
                     <input
                       type="number"
                       min="1"
@@ -433,7 +588,10 @@ function Map() {
                   </div>
                   {/* Create Button */}
                   <button
-                    className="bg-gray-50 hover:bg-gray-200 text-black px-8 py-2 rounded-lg font-semibold"
+                    className={`mt-4 px-4 py-2 rounded-lg font-bold text-white ${
+                      canCreateSession ? 'bg-gray-50 hover:bg-gray-200' : 'bg-gray-400 cursor-not-allowed'
+                    }`}
+                    disabled={!canCreateSession}
                     onClick={handleSubmit}
                   >
                     Create
