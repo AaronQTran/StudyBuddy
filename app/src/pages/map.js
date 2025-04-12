@@ -482,7 +482,10 @@ function Map() {
             {/* Back Home */}
             <div className="mt-4">
               <button
-                onClick={() => setPage(1)}
+                onClick={() => {
+                  handleBackClick(); 
+                  setPage(1); 
+                }}
                 className="bg-blue-700 hover:bg-blue-800 text-white px-6 py-2 rounded-lg font-semibold"
               >
                 Back to Home
