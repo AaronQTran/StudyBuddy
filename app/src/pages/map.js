@@ -189,6 +189,19 @@ function Map() {
   // Library use states
   const [selectedLibrary, setSelectedLibrary] = useState(null);
   const [selectedFloor, setSelectedFloor] = useState('');
+    const [focusLevel, setFocusLevel] = useState(0); 
+    const [groupSize, setGroupSize] = useState(1);
+    const [notes, setNotes] = useState('');
+    const [userCourses, setUserCourses] = useState([]);
+    const [selectedCourse, setSelectedCourse] = useState("");
+    const focusLabels = {
+      0: "Just For Vibes",
+      1: "Casual",
+      2: "Semi-Focused",
+      3: "Focused",
+      4: "Locked In",
+      5: "Extremely Locked In" 
+    };
   const [selectedDate, setSelectedDate] = useState('');
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState();
@@ -268,20 +281,7 @@ function Map() {
     }
   }
 
-  //use states 
-  const [focusLevel, setFocusLevel] = useState(0); 
-  const [groupSize, setGroupSize] = useState(1);
-  const [notes, setNotes] = useState('');
-  const [userCourses, setUserCourses] = useState([]);
-  const [selectedCourse, setSelectedCourse] = useState("");
-  const focusLabels = {
-    0: "Just For Vibes",
-    1: "Casual",
-    2: "Semi-Focused",
-    3: "Focused",
-    4: "Locked In",
-    5: "Extremely Locked In" 
-  };
+
 
   //function to get the courses
   useEffect(() => {
@@ -334,12 +334,21 @@ function Map() {
   const handleStartTimeChange = (time) => {
     setStartTime(time);
   
-    if (libHours && (time < libHours.open || time > libHours.close)) {
-      setStartTimeWarning(true);
+    if (libHours) {
+      const selected = new Date(`1970-01-01T${time}:00`);
+      const open = new Date(`1970-01-01T${libHours.open}:00`);
+      const close = new Date(`1970-01-01T${libHours.close}:00`);
+  
+      if (selected < open || selected > close) {
+        setStartTimeWarning(true);
+      } else {
+        setStartTimeWarning(false);
+      }
     } else {
       setStartTimeWarning(false);
     }
   };
+  
   
   const handleEndTimeChange = (time) => {
     setEndTime(time);
@@ -588,8 +597,8 @@ function Map() {
                   </div>
                   {/* Create Button */}
                   <button
-                    className={`mt-4 px-4 py-2 rounded-lg font-bold text-white ${
-                      canCreateSession ? 'bg-gray-50 hover:bg-gray-200' : 'bg-gray-400 cursor-not-allowed'
+                    className={`mt-4 px-4 py-2 rounded-lg font-bold ${
+                      canCreateSession ? 'bg-gray-50 hover:bg-gray-200 text-black' : 'bg-gray-400 text-white cursor-not-allowed'
                     }`}
                     disabled={!canCreateSession}
                     onClick={handleSubmit}
@@ -631,7 +640,7 @@ function Map() {
               <li><strong>Course:</strong> {selectedCourse}</li>
               <li><strong>Location:</strong> {selectedLibrary}, {selectedFloor}</li>
               <li><strong>Date:</strong> {selectedDate}</li>
-              <li><strong>Time:</strong> {startTime} - {endTime}</li>
+              <li><strong>Time:</strong> {formatTimeTo12Hour(startTime)} - {formatTimeTo12Hour(endTime)}</li>
               <li><strong>Focus Level:</strong> {focusLabels[focusLevel]}</li>
               <li><strong>Group Size:</strong> {groupSize}</li>
               <li><strong>Notes:</strong> {notes}</li>
