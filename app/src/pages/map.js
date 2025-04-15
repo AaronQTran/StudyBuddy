@@ -23,8 +23,10 @@ function Map() {
     { name: 'Marston Science Library', position: [29.647966553280117, -82.343966960907], color: 'bg-blue-700', hover: 'hover:bg-blue-800', floors: [1,2,3,4,5] },
     { name: 'Smathers Library', position: [29.650847698728658, -82.34179973602296], color: 'bg-orange-600', hover: 'hover:bg-orange-700', floors: [1,2,3,4]},
     { name: 'Library West', position: [29.651323219660075, -82.34292626380922], color: 'bg-blue-700', hover: 'hover:bg-blue-800', floors: [1,2,3,4,5,6]},
-    { name: 'Health Science Library', position: [29.640917189545437, -82.34488964080812], color: 'bg-orange-600', hover: 'hover:bg-orange-700', floors: [1,2]},
+    { name: 'Newell Hall', position: [29.64909, -82.345104], color: 'bg-orange-600', hover: 'hover:bg-orange-700', floors: [1,2,3,4]},
     { name: 'Reitz Union', position: [29.646316, -82.347701], color: 'bg-blue-600', hover: 'hover:bg-blue-700', floors: ['LL','G', '1','2','3']},
+    { name: 'Malachowsky Hall', position: [29.644032, -82.347829], color: 'bg-orange-600', hover: 'hover:bg-orange-700', floors: [1,2,3,4,5,6,7]},
+    { name: 'The Hub', position: [29.648214, -82.345625], color: 'bg-blue-600', hover: 'hover:bg-blue-700', floors: [1,2]},
   ];
 
   // Coordinates for building outlines (example coordinates for illustration)
@@ -86,22 +88,54 @@ function Map() {
       ],
     },
     {
-      name: 'Health Science Library',
+      name: 'Newell Hall',
       coordinates: [
-        [29.64094, -82.34497],
-        [29.64100, -82.34482],
-        [29.64087, -82.34475],
-        [29.64083, -82.34490],
+        [29.648997, -82.3449],
+        [29.649179, -82.3449],
+        [29.649179, -82.345452],
+        [29.649002, -82.345452],
+        [29.649002, -82.345399],
+        [29.648922, -82.345399],
+        [29.648922, -82.345281],
+        [29.648997, -82.345281],
+      ],
+    },
+    {
+      name: 'Malachowsky Hall',
+      coordinates: [
+        [29.644232, -82.347212],
+        [29.644232, -82.348355],
+        [29.643859, -82.348355],
+        [29.643859, -82.347647],
+        [29.643808, -82.347647],
+        [29.643808, -82.347266],
+        [29.644102, -82.347266],
+        [29.644102, -82.347212],
+      ],
+    },
+    {
+      name: 'The Hub',
+      coordinates: [
+        [29.648495, -82.34523],
+        [29.648369, -82.345337],
+        [29.648327, -82.34546],
+        [29.64836, -82.345611],
+        [29.648453, -82.345857],
+        [29.648332, -82.346061],
+        [29.648111, -82.345941],
+        [29.648034, -82.346072],
+        [29.647791, -82.345922],
+        [29.647911, -82.345523],
+        [29.648102, -82.345217],
+        [29.648064, -82.345126],
+        [29.648204, -82.345013],
+        [29.648237, -82.34504],
+        [29.648372, -82.344938]
       ],
     },
   ];
   const mapRef = useRef(null);
 
-  function onMapClick(e) {
-    const { lat, lng } = e.latlng;
-
-    console.log(`Clicked at latitude: ${lat}, longitude: ${lng}`);
-  }
   const defaultCenter = [29.647966553280117, -82.343966960907];
   const defaultZoom = 17;
   
@@ -525,7 +559,6 @@ function Map() {
           scrollWheelZoom={true}
           zoomControl={false}
           whenCreated={(mapInstance) => { mapRef.current = mapInstance; }}
-          onClick={onMapClick} // Attach the click event handler
         >
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
