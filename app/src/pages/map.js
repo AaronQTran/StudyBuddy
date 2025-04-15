@@ -65,21 +65,6 @@ function Map() {
         Saturday : { open: "9:00", close: "20:00" }
       }
     },
-    { name: 'Reitz Union', 
-      position: [29.646316, -82.347701], 
-      color: 'bg-blue-600', 
-      hover: 'hover:bg-blue-700', 
-      floors: ['LL','G', '1','2','3'], 
-      hours: {
-        Sunday : { open: "9:00", close: "21:00" },
-        Monday : { open: "7:00", close: "23:00" },
-        Tuesday : { open: "7:00", close: "23:00" },
-        Wednesday : { open: "7:00", close: "23:00" },
-        Thursday : { open: "7:00", close: "23:00" },
-        Friday : { open: "7:00", close: "23:00" },
-        Saturday : { open: "9:00", close: "21:00" }
-      }
-    },
     { name: 'Health Science Library', 
       position: [29.640917189545437, -82.34488964080812], 
       color: 'bg-orange-600', 
@@ -93,6 +78,21 @@ function Map() {
         Thursday : { open: "8:00", close: "22:00" },
         Friday : { open: "8:00", close: "17:00" },
         Saturday : { open: "13:00", close: "17:00" }
+      }
+    },
+    { name: 'Reitz Union', 
+      position: [29.646316, -82.347701], 
+      color: 'bg-blue-600', 
+      hover: 'hover:bg-blue-700', 
+      floors: ['LL','G', '1','2','3'], 
+      hours: {
+        Sunday : { open: "9:00", close: "21:00" },
+        Monday : { open: "7:00", close: "23:00" },
+        Tuesday : { open: "7:00", close: "23:00" },
+        Wednesday : { open: "7:00", close: "23:00" },
+        Thursday : { open: "7:00", close: "23:00" },
+        Friday : { open: "7:00", close: "23:00" },
+        Saturday : { open: "9:00", close: "21:00" }
       }
     },
     { name: 'Malachowsky Hall', position: [29.644032, -82.347829], color: 'bg-orange-600', hover: 'hover:bg-orange-700', floors: [1,2,3,4,5,6,7]},
