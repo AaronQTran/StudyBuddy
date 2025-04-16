@@ -120,10 +120,52 @@ function Map() {
         Saturday : { open: "9:00", close: "21:00" }
       }
     },
-    { name: 'Malachowsky Hall', position: [29.644032, -82.347829], color: 'bg-orange-600', hover: 'hover:bg-orange-700', floors: [1,2,3,4,5,6,7]},
-    { name: 'The Hub', position: [29.648214, -82.345625], color: 'bg-blue-600', hover: 'hover:bg-blue-700', floors: [1,2]},
-    { name: 'Newell Hall', position: [29.64909, -82.345104], color: 'bg-orange-600', hover: 'hover:bg-orange-700', floors: [1,2,3,4]},
-    { name: 'Reitz Union', position: [29.646316, -82.347701], color: 'bg-blue-600', hover: 'hover:bg-blue-700', floors: ['LL','G', '1','2','3']},
+    { name: 'Malachowsky Hall', 
+      position: [29.644032, -82.347829], 
+      color: 'bg-orange-600', 
+      hover: 'hover:bg-orange-700', 
+      floors: [1,2,3,4,5,6,7],
+      hours: {
+        Sunday : null,
+        Monday : { open: "8:00", close: "20:00" },
+        Tuesday : { open: "8:00", close: "20:00" },
+        Wednesday : { open: "8:00", close: "20:00" },
+        Thursday : { open: "8:00", close: "20:00" },
+        Friday : { open: "8:00", close: "20:00" },
+        Saturday : null
+      }
+    },
+
+    { name: 'The Hub', 
+      position: [29.648214, -82.345625], 
+      color: 'bg-blue-600', 
+      hover: 'hover:bg-blue-700', 
+      floors: [1,2],
+      hours: {
+        Sunday : null,
+        Monday : { open: "8:00", close: "17:00" },
+        Tuesday : { open: "8:00", close: "17:00" },
+        Wednesday : { open: "8:00", close: "17:00" },
+        Thursday : { open: "8:00", close: "17:00" },
+        Friday : { open: "8:00", close: "17:00" },
+        Saturday : null
+      }
+    },
+    { name: 'Newell Hall', 
+      position: [29.64909, -82.345104], 
+      color: 'bg-orange-600', 
+      hover: 'hover:bg-orange-700', 
+      floors: [1,2,3,4],
+      hours: {
+        Sunday : { open: "12:00", close: "20:00" },
+        Monday : { open: "8:00", close: "20:00" },
+        Tuesday : { open: "8:00", close: "20:00" },
+        Wednesday : { open: "8:00", close: "20:00" },
+        Thursday : { open: "8:00", close: "20:00" },
+        Friday : { open: "8:00", close: "20:00" },
+        Saturday : { open: "12:00", close: "20:00" }
+      }
+    },
   ];
   
   //function to convert the date to a day of the week: 
@@ -378,7 +420,7 @@ function Map() {
   }
 
   //function to reset the map
-  function ResetMapView({ center, zoom, onReset  }) {
+  function ResetMapView({ center, zoom, onReset }) {
     const map = useMap();
   
     useEffect(() => {
@@ -387,7 +429,7 @@ function Map() {
         duration: 1.5,
       });
       if (onReset) onReset();
-    }, [center, zoom, map]);
+    }, [center, zoom, map, onReset]);
 
     return null;
   }
