@@ -18,6 +18,31 @@ L.Icon.Default.mergeOptions({
 
 function Map() {
   // Coordinates for library markers
+  useEffect(() => {
+    console.log('called');
+
+    const fetchSessions = async () => {
+      try {
+        const response = await fetch("http://localhost:5001/api/pull_session", {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        });
+  
+        const result = await response.json();
+  
+        if (response.ok) {
+          console.log(result.message);
+          console.log(result.data); 
+        } else {
+          console.error("Backend error:", result.error);
+        }
+      } catch (error) {
+        console.error('Error in trying to pull sessions:', error);
+      }
+    };
+    fetchSessions();
+  }, []);
+  
 
   const libraries = [
     { name: 'Marston Science Library', 
@@ -275,7 +300,7 @@ function Map() {
     setNotes(''); 
     setSelectedCourse(''); 
   };
-
+  
   //Move this function outside of handleBackClick
   const handleSubmit = async () => {
     //for now i dont want to include people to get the basic MVP done.
@@ -299,7 +324,7 @@ function Map() {
     }
     console.log(data)
     try{
-      const response = await fetch("http://localhost:3000/api/create_session", {
+      const response = await fetch("http://localhost:5001/api/create_session", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)

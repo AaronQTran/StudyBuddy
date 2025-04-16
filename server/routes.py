@@ -24,14 +24,26 @@ def create_session():
         "ssid": data.get('ssid'),
         "building": data.get('building'),
         "floor": data.get('floor'),
+        "course": data.get('course'),
         "date": data.get('date'),
         "startTime": data.get('startTime'),
-        "endTime": data.get('endTime')
+        "endTime": data.get('endTime'),
+        "focusLevel": data.get('focusLevel'),
+        "groupSize": data.get('groupSize'),
+        "notes": data.get('notes')
     }
     print(document)
     result = collection.insert_one(document)
     print(f"Inserted document ID: {result.inserted_id}")
     return jsonify({"message": "Session created successfully"}), 200
 
+@app.route('/api/pull_session', methods = ['GET'])
+def pull_session():
+    print('called')
+    documents = list(collection.find({}, {'_id': 0}))  # Exclude MongoDB’s _id if unnecessary
+    print(documents)
+    return jsonify({"message": "Sessions pulled successfully", "data": documents}), 200
+
+    #return jsonify
 if __name__ == '__main__':
-    app.run(debug=True, port=3000)
+    app.run(debug=True, port=5001)
