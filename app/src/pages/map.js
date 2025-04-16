@@ -484,6 +484,20 @@ function Map() {
     });
   };
 
+  const handleSessionClick = (session) => {
+    setSelectedCourse(session.course || '');
+    setSelectedLibrary(session.building);
+    setSelectedFloor(session.floor);
+    setSelectedDate(session.date);
+    setStartTime(session.startTime);
+    setEndTime(session.endTime);
+    setFocusLevel(session.focusLevel || '');
+    setGroupSize(session.groupSize || '');
+    setNotes(session.notes || '');
+    setPage(5); 
+  };
+  
+
 
   return (
     <div className="flex h-screen w-screen">
@@ -527,7 +541,7 @@ function Map() {
             <div>
               <h2 className="text-2xl font-bold mb-4">Join a Study Session</h2>
               <p>Select a session from the list below:</p>
-              <div className="mt-4 max-h-96 overflow-y-auto">
+              <div className="max-h-[600px] overflow-y-auto w-full">
                 {sessions.length > 0 ? (
                   sessions.map((session, index) => (
                     <div 
@@ -563,6 +577,16 @@ function Map() {
                           "{session.notes}"
                         </div>
                       )}
+
+                      {/* Join Button */}
+                      <button
+                        className={`mt-4 px-8 py-2 rounded-lg font-bold bg-blue-600 text-white`}
+                        onClick={() => handleSessionClick(session)}
+                      >
+                        Join
+                      </button>
+
+
                     </div>
                   ))
                 ) : (
@@ -619,6 +643,7 @@ function Map() {
                       ))}
                     </select>
                   </div>
+
                   {/* Class */}
                   <div className="my-4">
                     <label className="mb-2 font-semibold block">Select Course*:</label>
@@ -796,11 +821,13 @@ function Map() {
               <li><strong>Group Size:</strong> {groupSize}</li>
               <li><strong>Notes:</strong> {notes}</li>
             </ul>
+            <p className="mt-2"> Make sure to add this to your calendar! See you then!!</p>
           
             {/* Back Home */}
             <div className="mt-4">
               <button
                 onClick={() => {
+                  setShouldResetMap(true);
                   handleBackClick(); 
                   setPage(1); 
                 }}
@@ -814,6 +841,7 @@ function Map() {
             <div className="mt-4">
               <button
                 onClick={() => {
+                  setShouldResetMap(true);
                   handleBackClick();
                   setPage(3);         
                 }}
@@ -822,14 +850,35 @@ function Map() {
                 Create Another Session
               </button>
             </div>
+          </div>          
+          )}
+
+          {page === 5 && (
+            <div className="p-4">
+            <h2 className="text-2xl font-semibold">You've Joined A Study Session!</h2>
+            <p className="mt-2">Here's the summary of your session:</p>
+            <ul className="mt-2">
+              <li><strong>Course:</strong> {selectedCourse}</li>
+              <li><strong>Location:</strong> {selectedLibrary}, {selectedFloor}</li>
+              <li><strong>Date:</strong> {selectedDate}</li>
+              <li><strong>Time:</strong> {formatTimeTo12Hour(startTime)} - {formatTimeTo12Hour(endTime)}</li>
+              <li><strong>Focus Level:</strong> {focusLabels[focusLevel]}</li>
+              <li><strong>Group Size:</strong> {groupSize}</li>
+              <li><strong>Notes:</strong> {notes}</li>
+            </ul>
+            <p className="mt-2"> Make sure to add this to your calendar! See you then!!</p>
           
-            {/* Potential: Link for sharing */}
+            {/* Back Home */}
             <div className="mt-4">
               <button
-                onClick={() => alert("Sharing options coming soon!")}
-                className="bg-gray-200 hover:bg-gray-300 text-black px-6 py-2 rounded-lg font-semibold"
+                onClick={() => {
+                  setShouldResetMap(true);
+                  handleBackClick(); 
+                  setPage(1); 
+                }}
+                className="bg-blue-700 hover:bg-blue-800 text-white px-6 py-2 rounded-lg font-semibold"
               >
-                Share Your Session
+                Back to Home
               </button>
             </div>
           </div>          
