@@ -18,6 +18,7 @@ L.Icon.Default.mergeOptions({
 
 function Map() {
   // Coordinates for library markers
+  const [sessions, setSessions] = useState([]);
   useEffect(() => {
     console.log('called');
 
@@ -33,6 +34,7 @@ function Map() {
         if (response.ok) {
           console.log(result.message);
           console.log(result.data); 
+          setSessions(result.data);
         } else {
           console.error("Backend error:", result.error);
         }
@@ -173,8 +175,6 @@ function Map() {
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-US', { weekday: 'long' }); 
   }
-
-
 
   // Coordinates for building outlines (example coordinates for illustration)
   const buildingOutlines = [
@@ -518,9 +518,48 @@ function Map() {
             <div>
               <h2 className="text-2xl font-bold mb-4">Join a Study Session</h2>
               <p>Select a session from the list below:</p>
-              <ul className="mt-4">
-                
-              </ul>
+              <div className="mt-4 max-h-96 overflow-y-auto">
+                {sessions.length > 0 ? (
+                  sessions.map((session, index) => (
+                    <div 
+                      key={index} 
+                      className="bg-white shadow-md rounded-lg p-4 mb-3 border border-gray-200 hover:bg-gray-50 cursor-pointer"
+                    >
+                      <div className="font-bold text-lg">
+                        {session.building}, Floor {session.floor}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Date: {session.date}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Time: {session.startTime} - {session.endTime}
+                      </div>
+                      {session.course && (
+                        <div className="text-sm text-gray-600">
+                          Course: {session.course}
+                        </div>
+                      )}
+                      {session.focusLevel && (
+                        <div className="text-sm text-gray-600">
+                          Focus Level: {focusLabels[session.focusLevel] || session.focusLevel}
+                        </div>
+                      )}
+                      {session.groupSize && (
+                        <div className="text-sm text-gray-600">
+                          Group Size: {session.groupSize}
+                        </div>
+                      )}
+                      {session.notes && (
+                        <div className="text-sm italic mt-2">
+                          "{session.notes}"
+                        </div>
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-500 italic">No active sessions found.</p>
+                )}
+              </div>
               <button
                 className="mt-4 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg"
                 onClick={() => setPage(1)}
