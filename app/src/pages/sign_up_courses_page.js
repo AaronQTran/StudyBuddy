@@ -11,7 +11,7 @@ function CoursePage() {
   const [courses, setCourses] = useState([]);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
+  //function to add courses so user can choose when making session
   const handleAddCourse = () => {
     if (!courses.includes(courseCode)) {
       if (courseCode.length === 7 ||courseCode.length === 8) {
@@ -48,14 +48,14 @@ function CoursePage() {
       console.log("Courses saved successfully!");
       navigate("/map");
     }
-    catch (error) {
+    catch (error) { //error handling
       console.error("Error saving courses:", error);
       setError("Failed to save courses. Please try again.");
     }
   };
     
   
-
+  //jsx and css frontend/styling
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <img src={gator} alt="Logo" className="absolute top-0 left-0 w-56 h-36 m-4" />

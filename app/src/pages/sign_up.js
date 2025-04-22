@@ -16,7 +16,7 @@ function SignUp() {
   });
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
+  //updates states everytime the form data changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevState => ({
@@ -25,7 +25,7 @@ function SignUp() {
     }));
   };
 
-
+  //calls firebase once user submits and creates a new account.
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -74,6 +74,7 @@ function SignUp() {
     }
   };
 
+  //styling, jsx
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <img src={gator} alt="Logo" className="absolute top-0 left-0 w-56 h-36 m-4" />

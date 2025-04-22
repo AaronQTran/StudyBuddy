@@ -13,6 +13,7 @@ collection = db["misc"]
 
 CORS(app)
 
+#endpoint to create a session in mongodb
 @app.route('/api/create_session', methods = ['POST'])
 def create_session():
     data = request.get_json()
@@ -37,6 +38,7 @@ def create_session():
     print(f"Inserted document ID: {result.inserted_id}")
     return jsonify({"message": "Session created successfully"}), 200
 
+#endpoint to pull sessions for the client from mongodb
 @app.route('/api/pull_session', methods = ['GET'])
 def pull_session():
     print('called')
@@ -45,5 +47,6 @@ def pull_session():
     return jsonify({"message": "Sessions pulled successfully", "data": documents}), 200
 
     #return jsonify
+#port 5001, debug true
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

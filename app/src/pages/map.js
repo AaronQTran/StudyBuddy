@@ -19,6 +19,7 @@ L.Icon.Default.mergeOptions({
 function Map() {
   // Coordinates for library markers
   const [sessions, setSessions] = useState([]);
+  //calls api endpoint to fetch sessions at the very beginning on mount
   useEffect(() => {
     console.log('called');
 
@@ -45,7 +46,7 @@ function Map() {
     fetchSessions();
   }, []);
   
-
+  //libraries and their info
   const libraries = [
     { name: 'Marston Science Library', 
       position: [29.647966553280117, -82.343966960907], 
@@ -443,6 +444,7 @@ function Map() {
     return null;
   }
 
+  //function to handle start time input
   const handleStartTimeChange = (time) => {
     setStartTime(time);
   
@@ -461,7 +463,7 @@ function Map() {
     }
   };
   
-  
+  //function to handle end time input
   const handleEndTimeChange = (time) => {
     setEndTime(time);
   

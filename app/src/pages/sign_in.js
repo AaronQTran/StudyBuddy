@@ -9,7 +9,7 @@ function SignIn() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
+  //function to handle submission of sign in form
   const handleSubmit = async (e) => { //event handler
     e.preventDefault(); //prevents page refresh
     console.log("submit clicked")
@@ -23,7 +23,7 @@ function SignIn() {
       setError(error.message);
     }
   };
-
+  //jsx css
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <img src={gator} alt="Logo" className="absolute top-0 left-0 w-56 h-36 m-4" />
