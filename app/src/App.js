@@ -10,10 +10,11 @@ import SignUp from './pages/sign_up';
 import CoursePage from './pages/sign_up_courses_page';
 
 const ProtectedRoute = ({ children }) => {
+  //usestates to handle users and loading screens.
   const [user, setUser] = useState(null);
   const [isLoading, setisLoading] = useState(true);
   const auth = getAuth();
-  
+  //useffect for handling navigation and to set children
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -33,7 +34,7 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
-
+//jsx css styling
 function Home() {
   const navigate = useNavigate();
   return (
@@ -100,6 +101,7 @@ function Home() {
   )
 }
 
+//routers for different pages.
 function App() {
   return (
     <Router>

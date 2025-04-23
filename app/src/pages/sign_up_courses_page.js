@@ -20,7 +20,7 @@ function CoursePage() {
           setCourseCode("");
           setError("");
         }  
-        else {
+        else {  //VALIDATES COURSES
           setError("Invalid course code.");
         }  
       }

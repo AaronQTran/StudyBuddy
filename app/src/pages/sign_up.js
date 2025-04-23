@@ -29,6 +29,7 @@ function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    //checking that the form data is correct and proper
     if (!formData.firstName || !formData.lastName || !formData.email || !formData.password) {
       setError("All fields are required");
       return;
