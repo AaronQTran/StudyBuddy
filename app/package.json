@@ -7,7 +7,7 @@
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
-    "@testing-library/user-event": "^13.5.0",
+    "@testing-library/user-event": "^14.0.0",
     "dotenv": "^16.4.7",
     "firebase": "^11.5.0",
     "framer-motion": "^12.6.5",
